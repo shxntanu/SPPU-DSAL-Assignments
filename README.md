@@ -1,4 +1,4 @@
-# SPPU-DSAL-Assignments
+# SPPU DSAL Assignments
 
 ## Question 1
 
