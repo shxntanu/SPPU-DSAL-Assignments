@@ -1,10 +1,10 @@
 /*
 Beginning with an empty binary search tree, Construct binary search tree by inserting
 the values in the order given. After constructing a binary tree -
-i.      Insert new node, 
-ii.     Find number of nodes in longest path from root, 
-iii.    Minimum data value found in the tree, 
-iv.     Change a tree so that the roles of the left and right pointers are swapped at every node, 
+i.      Insert new node,
+ii.     Find number of nodes in longest path from root,
+iii.    Minimum data value found in the tree,
+iv.     Change a tree so that the roles of the left and right pointers are swapped at every node,
 v.      Search a value.
 */
 
@@ -25,33 +25,38 @@ class Node
     }
 };
 
-class BST 
+class BST
 {
     public:
     Node *root, *temp;
+    Node *null = NULL;
+    
+    BST(int d)
+    {
+        root = new Node(d);
+    }
 
     void insert_node(int d, Node *n);   //done
-    void display(Node *t);              //done           
+    void display(Node *t);              //done
     int min_value();                    //done
     int max_value();                    //done
-    bool search(int d, Node *n);        //done
-    void swap_all_nodes(Node *n);       //Error
-    void swap(Node *n1, Node *n2);
+    void search(int d, Node *n);        //done
+    void swap_all_nodes(Node *n);       //done
     int height(Node* node);             //done
     int dia(Node *node);                //done
-    void del();
+    void del(Node *node, int key);
+    Node* minvaluenode(Node *node);     //done
 };
 
 int main()
 {
-    BST tree;
     int choice;
     int flag = 1;
-    int d,path; bool result;
+    int d,path;
     cout<<"\nEnter root node: ";
     int root;
     cin>>root;
-    tree.root->data = root;
+    BST tree(root);
     while(flag==1)
     {
         cout<<"======================================="<<endl;
@@ -65,6 +70,7 @@ int main()
         cout<<"||       5. Display largest value    ||"<<endl;
         cout<<"||       6. Swap all nodes           ||"<<endl;
         cout<<"||       7. Longest Path             ||"<<endl;
+        cout<<"||       8. Delete a node            ||"<<endl;
         cout<<"||                                   ||"<<endl;
         cout<<"======================================="<<endl;
         cout<<"\nEnter your choice: ";
@@ -80,13 +86,9 @@ int main()
             
             case 2: cout<<"Enter element to search: "<<endl;
                     cin>>d;
-                    result = tree.search(d, tree.root);
-                    if(result)
-                        cout<<"Element Exists in the tree"<<endl;
-                    else
-                        cout<<"Element not found"<<endl;
+                    tree.search(d, tree.root);
                     break;
-
+                
             case 3: tree.display(tree.root);
                     break;
 
@@ -102,6 +104,11 @@ int main()
 
             case 7: path=tree.dia(tree.root)-1;
                     cout<<"Longest Path: "<<path<<endl;
+                    break;
+                
+            case 8: cout<<"Enter element to delete: ";
+                    cin>>d;
+                    tree.del(tree.root, d);
                     break;
 
             default:cout<<"Wrong Input"<<endl;
@@ -129,7 +136,7 @@ void BST::insert_node(int d, Node *n)
     Node *t = new Node(d);
 
     if(d > temp->data)
-    {    
+    {
         if(temp->right == NULL)
             temp->right = t;
         
@@ -145,7 +152,7 @@ void BST::insert_node(int d, Node *n)
     }
 }
 
-bool BST::search(int d, Node *n)
+void BST::search(int d, Node *n)
 {
     Node *temp;
     temp = n;
@@ -153,7 +160,7 @@ bool BST::search(int d, Node *n)
     if(d > temp->data)
     {
         if (temp->right == NULL)
-            return false;
+            cout<<"Element doesn't exist!"<<endl;
 
         else search(d, temp->right);
     }
@@ -161,12 +168,12 @@ bool BST::search(int d, Node *n)
     else if(d < temp->data)
     {
         if(temp->left == NULL)
-            return false;
+            cout<<"Element doesn't exist!"<<endl;
         
         else search(d, temp->left);
     }
 
-    else return true;
+    else cout<<"Element exists!"<<endl;
 }
 
 int BST::min_value()
@@ -196,55 +203,24 @@ void BST::display(Node *t)
     if(t==NULL)
         return;
     
-    display(t->left);
+    if(t->left != NULL)
+        display(t->left);
     cout<<t->data<<" ";
-    display(t->right);
+    if(t->right != NULL)
+        display(t->right);
 }
 
-void BST::swap(Node *n1, Node *n2)
+void BST::swap_all_nodes(Node *p)
 {
-    Node *temp;
-    temp = n1;
-    n1 = n2;
-    n2 = temp;
-    delete temp;
-}
-
-void BST::swap_all_nodes(Node *n)
-{
-    if(n == NULL)
-        return;
-
-    else if(n->left == NULL)
-    {
-        if(n->right == NULL)
-            return;
-        
-        else
-        {    
-            swap(n->left, n->right);
-            swap_all_nodes(n->right);
-        }
-
-    }
-
-    else if(n->right == NULL)
-    {
-        if(n->left == NULL)
-            return;
-        
-        else
+    if(p){
+        if(p->left || p->right)
         {
-            swap(n->right, n->left);
-            swap_all_nodes(n->left);
+            Node *temp = p->left;
+            p->left = p->right;
+            p->right = temp;
         }
-    }
-
-    else
-    {
-        swap(n->left, n->right);
-        swap_all_nodes(n->right);
-        swap_all_nodes(n->left);
+        swap_all_nodes(p->left);
+        swap_all_nodes(p->right);
     }
 }
 
@@ -270,5 +246,74 @@ int BST::dia(Node* node)
     int op3 = l+r+1;
 
     return max(op1,max(op2,op3));
+}
 
+Node* BST::minvaluenode(Node *node)
+{
+    Node *current = node;
+    while(current && current->left != NULL)
+        current = current->left;
+    
+    return current;
+}
+
+void BST::del(Node *node, int key)
+{
+    if(node)
+    {
+        Node *current, *prev;
+        current = prev = node;
+        
+        if(root == NULL)
+            return;
+        
+        if(key < node->data)
+        {
+            prev = current;
+            current = node->left;
+            del(node->left, key);
+        }
+        
+        else if(key > node->data)
+        {
+            prev = current;
+            current = node->right;
+            del(node->right, key);
+        }
+        
+        else
+        {
+            // Node has no child
+            if(current->left == NULL and current->right == NULL)
+            {
+                cout<<"Deleted Node containing "<<current->data;
+                delete (current);
+            }
+            
+            // Node has 1 child
+            else if(current->left == NULL)
+            {
+                cout<<"Deleted Node containing "<<current->data;
+                current->data = current->right->data;
+                delete (current->right);
+                current->right = NULL;
+                
+            }
+            
+            else if (current->right == NULL)
+            {
+                cout<<"Deleted Node containing "<<current->data;
+                current->data = current->left->data;
+                delete (current->left);
+                current->left = NULL;
+            }
+            
+            else
+            {
+                Node *temp = minvaluenode(current->right);
+                current->data = temp->data;
+                del(current->right, temp->data);
+            }
+        }
+    }
 }
