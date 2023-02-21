@@ -10,7 +10,7 @@ the values in the order given. After constructing a binary tree -
 - Change a tree so that the roles of the left and right pointers are swapped at every node, 
 - Search a value.
 
-## Question 1
+## Question 2
 
 Beginning with an empty binary tree, Construct binary search tree by inserting
 the values in the order given. After constructing a binary tree, perform the
