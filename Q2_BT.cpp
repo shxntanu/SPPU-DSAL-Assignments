@@ -62,15 +62,32 @@ class BT
 
 void BT::insert(Node *n, int d)
 {
-    Node *temp = new Node(d);
-    if(n->left == NULL)
-    {
-        n->left = temp;
-        cout<<"Node Inserted"<<endl;
-        return;
-    }
+    Node *newnode = new Node(d);
+    if(n==NULL)
+        root = newnode;
 
+    else
+    {
+        queue<Node*> q;
+        q.push(n);
     
+        while (!q.empty()) {
+            Node* temp = q.front();
+            q.pop();
+    
+            if (temp->left != NULL)
+                q.push(temp->left);
+            else {
+                temp->left = newnode;
+            }
+    
+            if (temp->right != NULL)
+                q.push(temp->right);
+            else {
+                temp->right = newnode;
+            }
+        }
+    }
 }
 
 void BT::swap(Node *node)
