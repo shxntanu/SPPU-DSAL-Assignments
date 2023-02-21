@@ -1,4 +1,6 @@
 /*
+Author - Shantanu Wable
+
 Beginning with an empty binary search tree, Construct binary search tree by inserting
 the values in the order given. After constructing a binary tree -
 i.      Insert new node,
@@ -6,6 +8,7 @@ ii.     Find number of nodes in longest path from root,
 iii.    Minimum data value found in the tree,
 iv.     Change a tree so that the roles of the left and right pointers are swapped at every node,
 v.      Search a value.
+
 */
 
 #include <iostream>
@@ -44,7 +47,7 @@ class BST
     void swap_all_nodes(Node *n);       //done
     int height(Node* node);             //done
     int dia(Node *node);                //done
-    void del(Node *node, int key);
+    void del(Node *node, int key);      //Error
     Node* minvaluenode(Node *node);     //done
 };
 
@@ -264,7 +267,7 @@ void BST::del(Node *node, int key)
         Node *current, *prev;
         current = prev = node;
         
-        if(root == NULL)
+        if(node == NULL)
             return;
         
         if(key < node->data)
