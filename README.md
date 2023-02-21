@@ -2,8 +2,6 @@
 
 Programming Assignments of Savitribai Phule Pune University (SPPU) Second Year(SE) Computer Engineering, Data Structures and Algorithms Lab (DSAL) 2022-23.
 
-The assignment files are named as <Question Number>_AssignmentTitle.cpp
-
 ## Question 1
 
 Beginning with an empty binary search tree, Construct binary search tree by inserting
