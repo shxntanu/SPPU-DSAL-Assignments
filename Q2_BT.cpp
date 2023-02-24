@@ -16,6 +16,7 @@ following operations on it -
 
 #include <iostream>
 #include <queue>
+#include <stack>
 using namespace std;
 
 class Node
@@ -47,9 +48,12 @@ class BT
     }
 
     void insert(Node *n, int d);
-    void inorder(Node *node);
-    void preorder(Node *node);
-    void postorder(Node *node);
+    void rinorder(Node *node);
+    void rpreorder(Node *node);
+    void rpostorder(Node *node);
+    void iinorder(Node *node);
+    void ipreorder(Node *node);
+    void ipostorder(Node *node);
     void swap(Node *node);
     int height(Node* node);
     int dia(Node* node);
@@ -129,32 +133,90 @@ int BT::dia(Node* node)
     return max(op1,max(op2,op3));
 }
 
-void BT::postorder(Node *node)
+void BT::rpostorder(Node *node)
 {
     if(node == NULL)
         return;
 
-    inorder(node->left);
-    inorder(node->right);
+    rinorder(node->left);
+    rinorder(node->right);
     cout<<node->data<<" ";
 }
 
-void BT::preorder(Node *node)
+void BT::rpreorder(Node *node)
 {
     if(node == NULL)
         return;
 
     cout<<node->data<<" ";
-    inorder(node->left);
-    inorder(node->right);
+    rinorder(node->left);
+    rinorder(node->right);
 }
 
-void BT::inorder(Node *node)
+void BT::rinorder(Node *node)
 {
     if(node == NULL)
         return;
 
-    inorder(node->left);
+    rinorder(node->left);
     cout<<node->data<<" ";
-    inorder(node->right);
+    rinorder(node->right);
+}
+  
+void BT::iinorder(Node *node)
+{
+    stack<Node*> s;
+    Node *curr = node;
+    while(!s.empty() or curr!=NULL)
+    {
+        if(curr!=NULL)
+        {    
+            s.push(curr);
+            curr = curr->left;
+        }
+        
+        curr = s.top();
+        s.pop();
+        cout<<curr->data<<" ";
+
+        curr = curr->right;
+    }
+}
+
+void BT::ipreorder(Node *node)
+{
+    stack<Node*> s;
+    Node *curr = node;
+    s.push(node);
+    while(!s.empty() or curr!=NULL)
+    {
+        Node *t = s.top();
+        s.pop();
+        cout<<t->data<<" ";
+        if(t->right)
+            s.push(t->right);
+        if(t->left)
+            s.push(t->left);
+    }
+}
+
+void BT::ipostorder(Node *node)
+{
+    stack<Node*> s1, s2;
+    s1.push(node);
+    while(!s1.empty())
+    {
+        Node *t = s1.top();
+        s1.pop();
+        s2.push(t);
+        if(t->left)
+            s1.push(t->left);
+        if(t->right)
+            s1.push(t->right);
+    }
+    while(!s2.empty())
+    {   
+        cout<<s2.top()->data<<" ";
+        s2.pop();
+    }
 }
