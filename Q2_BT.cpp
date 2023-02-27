@@ -161,28 +161,21 @@ void ipostorder(Node *root)
     }
 }
 
-int height(Node* root)
+int maxDepth(Node* root)
 {
-    if(root == NULL) return 0;
-
-    int h1 = height(root->left);
-    int h2 = height(root->right);
-
-    return max(h1,h2)+1;
-}
-
-int dia(Node* root)
-{
-    if(root == NULL) return 0;
-
-    int l = height(root->left);
-    int r = height(root->right);
-
-    int op1 = dia(root->left);
-    int op2 = dia(root->right);
-    int op3 = l+r+1;
-
-    return max(op1,max(op2,op3));
+    if (root == NULL)
+        return 0;
+    else {
+        /* compute the depth of each subtree */
+        int lDepth = maxDepth(root->left);
+        int rDepth = maxDepth(root->right);
+ 
+        /* use the larger one */
+        if (lDepth > rDepth)
+            return (lDepth + 1);
+        else
+            return (rDepth + 1);
+    }
 }
 
 int getLeafCount(Node *root)
@@ -239,7 +232,7 @@ int main()
         switch(choice)
         {
             case 1:
-                cout<<"\t1. Recursive Inorder\n\t2. Iterative Inorder\n\t3. Recursive Preorder\n\t4. Iterative Preorder\n\t5. Recursive Postorder\n\t6. Iterative Postorder\n\tEnter your choice: ";
+                cout<<"\n\t1. Recursive Inorder\n\t2. Iterative Inorder\n\t3. Recursive Preorder\n\t4. Iterative Preorder\n\t5. Recursive Postorder\n\t6. Iterative Postorder\n\tEnter your choice: ";
                 cin>>choice1;
                 switch(choice1)
                 {
@@ -279,7 +272,7 @@ int main()
                 break;
                 
             case 3:
-                cout<<"Height of tree: "<<dia(root);
+                cout<<"Height of tree: "<<maxDepth(root);
                 break;
                 
             case 4:
