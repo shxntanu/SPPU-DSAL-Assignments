@@ -41,175 +41,45 @@ public:
     }
 };
 
-Node* buildTree(Node *root)
+class BinaryTree
 {
-    cout<<"Enter data for node (-1 indicates no data): ";
-    int d;
-    cin>>d;
-    root = new Node(d);
+public:
+    Node *root;
     
-    if(d == -1)
-        return NULL;
+    // Creating the tree
+    Node* buildTree(Node *root);
+    // Swapping all Nodes (Mirroring the tree)
+    void nodeSwap(Node *root);
     
-    cout<<"Enter data to the left of "<<d;
-    root->left = buildTree(root->left);
-    cout<<"Enter data to the right of "<<d;
-    root->right = buildTree(root->right);
-    return root;
-}
-
-void nodeSwap(Node *root)
-{
-    if(root)
+    // Recursive Traversal Functions
+    void rpostorder(Node *root);
+    void rpreorder(Node *root);
+    void rinorder(Node *root);
+    
+    // Iterative Traversal Functions
+    void ipostorder(Node *root);
+    void ipreorder(Node *root);
+    void iinorder(Node *root);
+    
+    int maxDepth(Node* root);
+    int getLeafCount(Node *root);
+    int getInternalCount(Node *root);
+    void deleteTree(Node* root);
+    
+    BinaryTree()
     {
-        if(root->left || root->right)
-        {
-            Node *temp = root->left;
-            root->left = root->right;
-            root->right = temp;
-        }
-        nodeSwap(root->right);
-        nodeSwap(root->left);
+        root = buildTree(root);
     }
-}
-
-void rpostorder(Node *root)
-{
-    if(root == NULL)
-        return;
-
-    rpostorder(root->left);
-    rpostorder(root->right);
-    cout<<root->data<<" ";
-}
-
-void rpreorder(Node *root)
-{
-    if(root == NULL)
-        return;
-
-    cout<<root->data<<" ";
-    rpreorder(root->left);
-    rpreorder(root->right);
-}
-
-void rinorder(Node *root)
-{
-    if(root == NULL)
-        return;
-
-    rinorder(root->left);
-    cout<<root->data<<" ";
-    rinorder(root->right);
-}
-
-void iinorder(Node *root)
-{
-    stack<Node*> s;
-    Node *curr = root;
-    while(!s.empty() or curr!=NULL)
+    
+    BinaryTree(BinaryTree &t)
     {
-        if(curr!=NULL)
-        {
-            s.push(curr);
-            curr = curr->left;
-        }
-
-        curr = s.top();
-        s.pop();
-        cout<<curr->data<<" ";
-
-        curr = curr->right;
+        this->root = t.root;
     }
-}
-
-void ipreorder(Node *root)
-{
-    stack<Node*> s;
-    Node *curr = root;
-    s.push(root);
-    while(!s.empty() or curr!=NULL)
-    {
-        Node *t = s.top();
-        s.pop();
-        cout<<t->data<<" ";
-        if(t->right)
-            s.push(t->right);
-        if(t->left)
-            s.push(t->left);
-    }
-}
-
-void ipostorder(Node *root)
-{
-    stack<Node*> s1, s2;
-    s1.push(root);
-    while(!s1.empty())
-    {
-        Node *t = s1.top();
-        s1.pop();
-        s2.push(t);
-        if(t->left)
-            s1.push(t->left);
-        if(t->right)
-            s1.push(t->right);
-    }
-    while(!s2.empty())
-    {
-        cout<<s2.top()->data<<" ";
-        s2.pop();
-    }
-}
-
-int maxDepth(Node* root)
-{
-    if (root == NULL)
-        return 0;
-    else {
-        /* compute the depth of each subtree */
-        int lDepth = maxDepth(root->left);
-        int rDepth = maxDepth(root->right);
- 
-        /* use the larger one */
-        if (lDepth > rDepth)
-            return (lDepth + 1);
-        else
-            return (rDepth + 1);
-    }
-}
-
-int getLeafCount(Node *root)
-{
-    if(root == NULL)
-        return 0;
-    else if(root->left == NULL and root->right == NULL)
-        return 1;
-    else
-        return getLeafCount(root->right) + getLeafCount(root->left);
-}
-
-int getInternalNodes(Node *root)
-{
-    if(root == NULL or (root->right == NULL and root->left == NULL))
-        return 0;
-    else return 1 + getInternalNodes(root->left) + getInternalNodes(root->right);
-}
-
-void deleteTree(Node* root)
-{
-    if (root == NULL) return;
-
-    deleteTree(root->left);
-    deleteTree(root->right);
-
-    cout << "\n Deleting node: " << root->data;
-    delete root;
-}
+};
 
 int main()
 {
-    Node *root = NULL;
-    root = buildTree(root);
+    BinaryTree tree;
     int flag = 1, choice1;
     while(flag)
     {
@@ -237,27 +107,27 @@ int main()
                 switch(choice1)
                 {
                     case 1:
-                        rinorder(root);
+                        tree.rinorder(tree.root);
                         break;
                         
                     case 2:
-                        iinorder(root);
+                        tree.iinorder(tree.root);
                         break;
                         
                     case 3:
-                        rpreorder(root);
+                        tree.rpreorder(tree.root);
                         break;
                         
                     case 4:
-                        ipreorder(root);
+                        tree.ipreorder(tree.root);
                         break;
                         
                     case 5:
-                        rpostorder(root);
+                        tree.rpostorder(tree.root);
                         break;
                         
                     case 6:
-                        ipostorder(root);
+                        tree.ipostorder(tree.root);
                         break;
                         
                     default:
@@ -266,25 +136,25 @@ int main()
                 break;
                 
             case 2:
-                nodeSwap(root);
+                tree.nodeSwap(tree.root);
                 cout<<"Nodes swapped!, Inorder Display: "<<endl;
-                iinorder(root);
+                tree.iinorder(tree.root);
                 break;
                 
             case 3:
-                cout<<"Height of tree: "<<maxDepth(root);
+                cout<<"Height of tree: "<<tree.maxDepth(tree.root);
                 break;
                 
             case 4:
-                cout<<"Number of leaf nodes: "<<getLeafCount(root)<<endl;
+                cout<<"Number of leaf nodes: "<<tree.getLeafCount(tree.root)<<endl;
                 break;
                 
             case 5:
-                cout<<"Number of internal nodes: "<<getInternalNodes(root);
+                cout<<"Number of internal nodes: "<<tree.getInternalCount(tree.root);
                 break;
                 
             case 6:
-                deleteTree(root);
+                tree.deleteTree(tree.root);
                 break;
                 
             default:
@@ -304,5 +174,177 @@ int main()
             goto label;
         }
     }
+    
+    // Copying the binary tree
+    // uses operator "="
+    BinaryTree Tree2 = tree;
+    
     return 0;
+}
+
+
+Node* BinaryTree::buildTree(Node *root)
+{
+    cout<<"Enter data for node (-1 indicates no data): ";
+    int d;
+    cin>>d;
+    root = new Node(d);
+    
+    if(d == -1)
+        return NULL;
+    
+    cout<<"Enter data to the left of "<<d<<" ";
+    root->left = buildTree(root->left);
+    cout<<"Enter data to the right of "<<d<<" ";
+    root->right = buildTree(root->right);
+    return root;
+}
+
+void BinaryTree::nodeSwap(Node *root)
+{
+    if(root) // If root is not NULL
+    {
+        if(root->left || root->right) // If either of left or right of root exists
+        {
+            Node *temp = root->left;
+            root->left = root->right;
+            root->right = temp;
+        }
+        nodeSwap(root->right); // Continue in right subtree
+        nodeSwap(root->left);  // Continue in left subtree
+    }
+}
+
+void BinaryTree::rpostorder(Node *root)
+{
+    if(root == NULL)
+        return;
+
+    rpostorder(root->left);
+    rpostorder(root->right);
+    cout<<root->data<<" ";
+}
+
+void BinaryTree::rpreorder(Node *root)
+{
+    if(root == NULL)
+        return;
+
+    cout<<root->data<<" ";
+    rpreorder(root->left);
+    rpreorder(root->right);
+}
+
+void BinaryTree::rinorder(Node *root)
+{
+    if(root == NULL)
+        return;
+
+    rinorder(root->left);
+    cout<<root->data<<" ";
+    rinorder(root->right);
+}
+
+void BinaryTree::iinorder(Node *root)
+{
+    stack<Node*> s;
+    Node *curr = root;
+    while(!s.empty() or curr!=NULL)
+    {
+        if(curr!=NULL)
+        {
+            s.push(curr);
+            curr = curr->left;
+        }
+        curr = s.top();
+        s.pop();
+        cout<<curr->data<<" ";
+        curr = curr->right;
+    }
+}
+
+void BinaryTree::ipreorder(Node *root)
+{
+    if (root == NULL)
+        return;
+    stack<Node*> nodeStack;
+    nodeStack.push(root);
+ 
+    while (nodeStack.empty() == false) {
+        Node* node = nodeStack.top();
+        cout<<node->data<<" ";
+        nodeStack.pop();
+        if (node->right)
+            nodeStack.push(node->right);
+        if (node->left)
+            nodeStack.push(node->left);
+    }
+}
+
+void BinaryTree::ipostorder(Node *root)
+{
+    // 2 Stack method
+    stack<Node*> s1, s2;
+    s1.push(root);
+    while(!s1.empty())
+    {
+        Node *t = s1.top();
+        s1.pop();
+        s2.push(t);
+        if(t->left)
+            s1.push(t->left);
+        if(t->right)
+            s1.push(t->right);
+    }
+    while(!s2.empty())
+    {
+        cout<<s2.top()->data<<" ";
+        s2.pop();
+    }
+}
+
+int BinaryTree::maxDepth(Node* root)
+{
+    if (root == NULL)
+        return 0;
+    else {
+        // Compute the depth of each subtree
+        int lDepth = maxDepth(root->left);
+        int rDepth = maxDepth(root->right);
+ 
+        // Using the larger depth
+        if (lDepth > rDepth)
+            return (lDepth + 1);
+        else
+            return (rDepth + 1);
+    }
+}
+
+int BinaryTree::getLeafCount(Node *root)
+{
+    if(root == NULL)
+        return 0;
+    // Condition for leaf Node
+    else if(root->left == NULL and root->right == NULL)
+        return 1;
+    else
+        return getLeafCount(root->right) + getLeafCount(root->left);
+}
+
+int BinaryTree::getInternalCount(Node *root)
+{
+    if(root == NULL or (root->right == NULL and root->left == NULL))
+        return 0;
+    else return 1 + getInternalCount(root->left) + getInternalCount(root->right);
+}
+
+void BinaryTree::deleteTree(Node* root)
+{
+    if (root == NULL) return;
+
+    deleteTree(root->left);
+    deleteTree(root->right);
+
+    cout << "\n Deleting node: " << root->data;
+    delete root;
 }
