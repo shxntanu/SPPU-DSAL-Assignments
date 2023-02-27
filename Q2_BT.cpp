@@ -216,7 +216,7 @@ void deleteTree(Node* root)
 int main()
 {
     Node *root = NULL;
-    buildTree(root);
+    root = buildTree(root);
     int flag = 1, choice1;
     while(flag)
     {
