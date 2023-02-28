@@ -251,7 +251,7 @@ void BinaryTree::iinorder(Node *root)
     Node *curr = root;
     while(!s.empty() or curr!=NULL)
     {
-        if(curr!=NULL)
+        while(curr!=NULL)
         {
             s.push(curr);
             curr = curr->left;
