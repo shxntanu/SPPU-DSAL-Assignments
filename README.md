@@ -25,3 +25,9 @@ following operations on it -
 6. Erase all nodes in a binary tree
 
 (implement both recursive and iterative methods)
+
+## Question 3
+
+Create an inordered threaded binary tree. Perform inorder, preorder traversals without 
+recursion and deletion of a node.
+Analyze time and space complexity of algorithm.
