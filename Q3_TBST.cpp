@@ -8,145 +8,334 @@ Analyze time and space complexity of algorithm.
 Ref - https://www.geeksforgeeks.org/double-threaded-binary-search-tree/
 */
 
-#include <iostream>
+#include <bits/stdc++.h>
 using namespace std;
 
 class Node
 {
-    Node *left;
-    bool lt;
+
+	Node* left;
+    bool lthread;
     int data;
-    bool rt;
-    Node *right;
+	bool rthread;
+    Node*right;
 
-    Node()
+public:
+	Node(int d)
     {
-        left = right = NULL;
-        data = 0;
-        lt = rt = 0;
-    }
+		data=d;
+		left=right=NULL;
+		lthread=rthread=true;
+	}
 
-    Node(int d)
-    {
-        left = right = NULL;
-        data = d;
-        lt = rt = 0;
-    }
-    
-    friend class TBST;
+	friend class TBST;
+
 };
 
-class TBST
-{
-    Node *root;
+class TBST{
+public:
+	Node* root;
 
-    TBST()
+	TBST()
     {
-        cout<<"Enter value of root node: ";
-        cin>>root->data;
-        cout<<"TBT Created with root as "<<root->data<<endl;
-    }
+		root = NULL;
+		cout << "Creation of Threaded Binary Search Tree" << endl;
+        cout << "Enter no. of nodes: " << endl;
+        int n;
+        cin >> n;
+        cout << "Enter values of each node: " << endl;
+        int a[n];
+        for(int i=0;i<n;i++)
+        {
+        	cin>>a[i];
+        	insert(a[i]);
+        }
+	}
 
-    void insertNode(int d, Node *n);
-    Node* inorderSuccessor(Node* root, Node* x);
-    Node* leftMostNode(Node* node);
-    Node* rightMostNode(Node* node);
-    Node* findInorderRecursive(Node* root, Node* x );
-    
+    void insert(int key);
     void inorder();
     void preorder();
-}
+    void postorder();
+    Node* leftMost(Node* temp);
+    Node* inorderSuccessor(Node *temp);
+    Node* inorderPredecessor(Node* temp);
+    void deletion(int key);
+};
 
 int main()
 {
-    return 0;
+	TBST tree;
+	while(true)
+    {
+		cout<<"Implementation of Threaded BST"<<endl<<endl;
+		cout<<"1. Traversal of Threaded BST"<<endl;
+		cout<<"2. Delete a node from Threaded BST"<<endl;
+		cout<<"3. Exit"<<endl;
+		int res;
+		cout<<"Enter your choice : ";
+		cin>>res;
+		if(res==1)
+        {
+			cout<<"Inorder :";
+			tree.inorder();
+			cout<<"Preorder :";
+			tree.preorder();
+			cout<<"Postorder :";
+			tree.postorder();
+			cout<<endl;
+		}
+		else if(res==2)
+        {
+			int n;
+			cout<<"Enter a no. to delete from threaded BST : ";
+			cin>>n;
+			tree.deletion(n);
+			cout<<"After deletion : "<<endl;
+			cout<<"Inorder :";
+			tree.inorder();
+			cout<<"Preorder :";
+			tree.preorder();
+			cout<<"Postorder :";
+			tree.postorder();
+			cout<<endl;
+		}
+		else if(res==3)
+        {
+			cout<<"Terminating program"<<endl;
+			break;
+		}
+		else
+            continue;
+	}
+	return 0;
 }
 
-void TBST::insertNode(int d, Node *n)
+void TBST::insert(int key)
 {
-    Node *temp;
-    temp = n;
-    Node *t = new Node(d);
+    Node* newNode=new Node(key);
 
-    if(d > temp->data)
+    // If tree is empty
+    if(root==NULL)
     {
-        if(temp->right == NULL)
-            temp->right = t;
-        
-        else insertNode(d, temp->right);
+        root=newNode;
+        return;
     }
 
+    Node* temp=root;
+    Node* parent=NULL;
+
+    // Searching for the place to insert the node
+    while(temp!=NULL)
+    {
+        if(key==temp->data)
+        {
+            return;
+        }
+        parent=temp;
+        if(key<temp->data)
+        {
+            if(temp->lthread==false)
+                temp=temp->left;
+            else 
+                break;
+        }
+        else
+        {
+            if(temp->rthread==false) 
+                temp=temp->right;
+            else
+                break;
+        }
+    }
+
+    // Inserting node as left child
+    if(key<temp->data)
+    {
+        newNode->left=parent->left;
+        newNode->right=parent;
+        parent->lthread=false;
+        parent->left=newNode;
+    }
+
+    // Inserting node as right child
     else
     {
-        if(temp->left == NULL)
-            temp->left = t;
-
-        else insertNode(d, temp->left);
+        newNode->left=parent;
+        newNode->right=parent->right;
+        parent->rthread=false;
+        parent->right=newNode;
     }
-
-    temp->right = inorderSuccessor(root, temp);
-
 }
 
-// function to find left most node in a tree
-Node* TBST::leftMostNode(Node* node)
+void TBST::inorder()
 {
-    while (node != NULL && node->left != NULL)
-        node = node->left;
-    return node;
-}
- 
-// function to find right most node in a tree
-Node* TBST::rightMostNode(Node* node)
-{
-    while (node != NULL && node->right != NULL)
-        node = node->right;
-    return node;
-}
- 
-// recursive function to find the Inorder Successor
-// when the right child of node x is NULL
-Node* TBST::findInorderRecursive(Node* root, Node* x )
-{
-    if (!root)
-        return NULL;
- 
-    if (root==x || (temp = findInorderRecursive(root->left,x)) ||
-                   (temp = findInorderRecursive(root->right,x)))
+    Node* temp=leftMost(root);
+    while(temp!=NULL)
     {
-        if (temp)
+        cout<<temp->data<<" ";
+        if(temp->rthread==true) temp=temp->right;
+        else 
         {
-            if (root->left == temp)
-            {
-                return root;
-            }
+            temp=temp->right;
+            temp=leftMost(temp);
         }
-
-        return root;
     }
-    return NULL;
+    cout<<endl;
 }
- 
-// function to find inorder successor of
-// a node
-Node* TBST::inorderSuccessor(Node* root, Node* x)
+
+Node* TBST::leftMost(Node *temp)
 {
-    // Case1: If right child is not NULL
-    if (x->right != NULL)
+    if(temp==NULL) return NULL;
+    while(temp->left!=NULL && temp->lthread==false)
     {
-        Node* inorderSucc = leftMostNode(x->right);
-        return inorderSucc;
+        temp=temp->left;
     }
- 
-    // Case2: If right child is NULL
-    if (x->right == NULL)
-    {   
-        Node* rightMost = rightMostNode(root);
- 
-        // case3: If x is the right most node
-        if (rightMost == x)
-            return NULL;
+    return temp;
+}
+
+Node* TBST::inorderSuccessor(Node *temp)
+{
+    if(temp->rthread==true){
+        return temp->right;
+    }
+    else{
+        temp=temp->right;
+        return leftMost(temp);
+    }
+}
+
+Node* TBST::inorderPredecessor(Node *temp)
+{
+        return temp->left;
+}
+
+void TBST::preorder()
+{
+    if(root==NULL) return;
+    Node* temp=root;
+    while(temp!=NULL){
+        cout<<temp->data<<" ";
+        if(temp->lthread==false)
+            temp=temp->left;
+        else if(temp->rthread==false)
+            temp=temp->right;
+        else{
+            while(temp!=NULL && temp->rthread==true)
+                temp=temp->right;
+            if(temp!=NULL)
+                temp=temp->right;
+        }
+    }
+    cout<<endl;
+}
+
+void TBST::deletion(int key)
+{
+    Node* temp=root;
+    Node* parent=NULL;
+
+    // Searching for the node
+    while(temp!=NULL){
+        if(key==temp->data){
+            break;
+        }
+        parent=temp;
+        if(key<temp->data){
+            if(temp->lthread==false) temp=temp->left;
+            else break;
+        }
+        else{
+            if(temp->rthread==false) temp=temp->right;
+            else break;
+        }
+    }
+
+    // Node not found
+    if(key!=temp->data){
+        cout<<key<<" not found"<<endl;
+        return;
+    }
+
+    // Node to be deleted is a leaf node
+    else if (temp->lthread == true && temp->rthread == true)
+    {
+        if (parent == NULL)
+            root = NULL;
+
+        else if (temp == parent->left) {
+            parent->lthread = true;
+            parent->left = temp->left;
+        }
+        else {
+            parent->rthread = true;
+            parent->right = temp->right;
+        }
+        delete temp;
+        cout<<key<<" Successfully deleted"<<endl;
+        return;
+    }
+
+    // Node to be deleted has only one child
+    else if((temp->lthread==true && temp->rthread==false) || (temp->lthread==false && temp->rthread==true)){
+        Node* child;
+        if(temp->lthread==false)
+            child=temp->left;
         else
-            findInorderRecursive(root, x);
+            child=temp->right;
+        if(parent==NULL){
+            root=child;
+        }
+        if(temp==parent->left){
+            parent->left=child;
+        }
+        else parent->right=child;
+        Node* s=inorderSuccessor(temp);
+        Node* p=inorderPredecessor(temp);
+
+        if(temp->lthread==false){
+            p->right=s;
+        }
+        else{
+            s->left=p;
+        }
+        delete temp;
+        cout<<key<<" Successfully deleted"<<endl;
+        return;
     }
+
+    // Node to be deleted is an internal node
+    else
+    {
+        Node* s=inorderSuccessor(temp);
+        int t=s->data;
+        deletion(s->data);
+        temp->data=t;
+    }
+}
+
+void TBST::postorder()
+{
+    Node* temp=root;
+    stack<Node*> s;
+    stack<Node*> out;
+    s.push(temp);
+    while(!s.empty())
+    {
+        temp=s.top();
+        s.pop();
+        out.push(temp);
+        if(temp->lthread==false){
+            s.push(temp->left);
+        }
+        if(temp->rthread==false){
+            s.push(temp->right);
+        }
+    }
+    while(!out.empty())
+    {
+        temp=out.top();
+        out.pop();
+        cout<<temp->data<<" ";
+    }
+    cout<<endl;
 }
