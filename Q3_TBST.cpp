@@ -4,8 +4,6 @@ Author - Shantanu Wable
 Create an inordered threaded binary tree. Perform inorder, preorder traversals without 
 recursion and deletion of a node.
 Analyze time and space complexity of algorithm.
-
-Ref - https://www.geeksforgeeks.org/double-threaded-binary-search-tree/
 */
 
 #include <bits/stdc++.h>
