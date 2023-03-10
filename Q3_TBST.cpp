@@ -12,10 +12,10 @@ using namespace std;
 class Node
 {
 
-	Node* left;
+    Node* left;
     bool lthread;
     int data;
-	bool rthread;
+    bool rthread;
     Node*right;
 
 public:
@@ -30,7 +30,8 @@ public:
 
 };
 
-class TBST{
+class TBST
+{
 public:
 	Node* root;
 
